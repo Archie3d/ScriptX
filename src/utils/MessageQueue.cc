@@ -24,9 +24,11 @@ namespace script::utils {
 
 // <queue, nested count>
 using RunnineQueueMap = std::unordered_map<MessageQueue*, int>;
-SCRIPTX_THREAD_LOCAL(RunnineQueueMap, runningQueue_);
 
-static inline RunnineQueueMap& getRunningQueue() { return internal::getThreadLocal(runningQueue_); }
+static inline RunnineQueueMap& getRunningQueue() {
+  SCRIPTX_THREAD_LOCAL(RunnineQueueMap, runningQueue_);
+  return internal::getThreadLocal(runningQueue_);
+}
 
 class LoopQueueGuard {
   MessageQueue* queue_;
