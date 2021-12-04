@@ -224,7 +224,11 @@ void QjsEngine::extendLifeTimeToNextLoop(JSValue value) {
   msg->template inplaceObject<ExtendLifeTime>(value, this);
   msg->tag = this;
 
+#ifdef _MSC_VER
+  mq->postMessage(msg);
+#else
   mq->template postMessage(msg);
+#endif
 }
 
 Local<Value> QjsEngine::get(const Local<String>& key) { return getGlobal().get(key); }

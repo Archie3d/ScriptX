@@ -39,7 +39,7 @@ set(SCRIPTX_BACKEND_LIST
         )
 
 # set options, choose which ScriptX Backend to use, V8 or JSC or etc...
-set(SCRIPTX_BACKEND "" CACHE STRING "choose which ScriptX Backend(Implementation) to use, V8 or JavaScriptCore or etc...")
+set(SCRIPTX_BACKEND "QuickJs" CACHE STRING "choose which ScriptX Backend(Implementation) to use, V8 or JavaScriptCore or etc...")
 set_property(CACHE SCRIPTX_BACKEND PROPERTY STRINGS "${SCRIPTX_BACKEND_LIST}")
 option(SCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION "don't throw exception on defineClass generated bound function/get/set, return null & log instead. default to OFF" OFF)
 option(SCRIPTX_FEATURE_INSPECTOR "enable inspector feature, default to OFF" OFF)
@@ -177,4 +177,4 @@ message(STATUS "Configuring ScriptX using backend ${SCRIPTX_BACKEND}.")
 message(STATUS "Configuring ScriptX option SCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION ${SCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION}.")
 message(STATUS "Configuring ScriptX feature SCRIPTX_FEATURE_INSPECTOR ${SCRIPTX_FEATURE_INSPECTOR}.")
 
-include(${SCRIPTX_DIR}/docs/doxygen/CMakeLists.txt)
+#include(${SCRIPTX_DIR}/docs/doxygen/CMakeLists.txt)
