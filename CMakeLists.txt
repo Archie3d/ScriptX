@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.19)
 
 file(STRINGS ${CMAKE_CURRENT_LIST_DIR}/VERSION SCRIPTX_VERSION)
 
@@ -43,6 +43,8 @@ set(SCRIPTX_BACKEND "QuickJs" CACHE STRING "choose which ScriptX Backend(Impleme
 set_property(CACHE SCRIPTX_BACKEND PROPERTY STRINGS "${SCRIPTX_BACKEND_LIST}")
 option(SCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION "don't throw exception on defineClass generated bound function/get/set, return null & log instead. default to OFF" OFF)
 option(SCRIPTX_FEATURE_INSPECTOR "enable inspector feature, default to OFF" OFF)
+option(SCRIPTX_DOXYGEN "enable documentation generator, default to OFF" OFF)
+
 
 ###### add ScriptX library target ######
 
@@ -80,37 +82,28 @@ endif ()
 if (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_V8})
 
     include(${SCRIPTX_DIR}/backend/V8/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/V8/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_JAVASCRIPTCORE})
 
     include(${SCRIPTX_DIR}/backend/JavaScriptCore/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/JavaScriptCore/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/JavaScriptCore/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_SPIDERMONKEY})
 
     include(${SCRIPTX_DIR}/backend/SpiderMonkey/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/SpiderMonkey/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/SpiderMonkey/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_QUICKJS})
 
     include(${SCRIPTX_DIR}/backend/QuickJs/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/QuickJs/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/QuickJs/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_WEBASSEMBLY})
 
     include(${SCRIPTX_DIR}/backend/WebAssembly/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/WebAssembly/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/WebAssembly/trait/Trait)
+
     # see https://github.com/emscripten-core/emscripten/blob/master/src/settings.js
     # -sALLOW_MEMORY_GROWTH=1
     # -sINITIAL_MEMORY=167772160
@@ -126,37 +119,27 @@ elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_WEBASSEMBLY})
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_WKWEBVIEW})
 
     include(${SCRIPTX_DIR}/backend/WKWebView/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/WKWebView/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/WKWebView/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_LUA})
 
     include(${SCRIPTX_DIR}/backend/Lua/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Lua/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Lua/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_PYTHON})
 
     include(${SCRIPTX_DIR}/backend/Python/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Python/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Python/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_RUBY})
 
     include(${SCRIPTX_DIR}/backend/Ruby/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Ruby/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Ruby/trait/Trait)
 
 elseif (${SCRIPTX_BACKEND} STREQUAL ${SCRIPTX_BACKEND_EMPTY})
 
     include(${SCRIPTX_DIR}/backend/Template/CMakeLists.txt)
-    add_definitions(
-            -DSCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Template/trait/Trait
-    )
+    target_compile_definitions(ScriptX PUBLIC SCRIPTX_BACKEND_TRAIT_PREFIX=../backend/Template/trait/Trait)
 
 else ()
 
@@ -165,11 +148,11 @@ else ()
 endif ()
 
 if (${SCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION})
-    add_definitions(-DSCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION)
+    target_compile_definitions(ScriptX PUBLIC -DSCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION)
 endif ()
 
 if (${SCRIPTX_FEATURE_INSPECTOR})
-    add_definitions(-DSCRIPTX_FEATURE_INSPECTOR)
+    target_compile_definitions(ScriptX PUBLIC -DSCRIPTX_FEATURE_INSPECTOR)
 endif ()
 
 message(STATUS "Configuring ScriptX version ${SCRIPTX_VERSION}.")
@@ -177,4 +160,6 @@ message(STATUS "Configuring ScriptX using backend ${SCRIPTX_BACKEND}.")
 message(STATUS "Configuring ScriptX option SCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION ${SCRIPTX_NO_EXCEPTION_ON_BIND_FUNCTION}.")
 message(STATUS "Configuring ScriptX feature SCRIPTX_FEATURE_INSPECTOR ${SCRIPTX_FEATURE_INSPECTOR}.")
 
-#include(${SCRIPTX_DIR}/docs/doxygen/CMakeLists.txt)
+if (${SCRIPTX_DOXYGEN})
+    include(${SCRIPTX_DIR}/docs/doxygen/CMakeLists.txt)
+endif ()
