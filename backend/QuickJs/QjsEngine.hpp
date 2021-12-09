@@ -131,7 +131,6 @@ Local<Object> QjsEngine::newPrototype(const ClassDefine<T>& define) {
     auto fun = newRawFunction(
         this, const_cast<FuncDef*>(&f), definePtr,
         [](const Arguments& args, void* data1, void* data2, bool) {
-          EngineScope scope(args.engine());
           auto ptr = static_cast<InstanceClassOpaque*>(
               JS_GetOpaque(qjs_interop::peekLocal(args.thiz()), kInstanceClassId));
           if (ptr == nullptr || ptr->classDefine != data2) {
