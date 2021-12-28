@@ -133,4 +133,28 @@ TEST_F(EngineTest, LuaBuiltIns) {
 
 #endif
 
+#ifdef SCRIPTX_LANG_JAVASCRIPT
+TEST_F(EngineTest, JsPromiseTest) {
+  EngineScope scope(engine);
+
+  int value = 0;
+  auto setValue = Function::newFunction([&value](int val) { value = val; });
+  engine->set("setValue", setValue);
+  engine->eval(
+      u8R"(
+        const promise = new Promise((resolve, reject) => {
+            resolve(1);
+        });
+
+        promise.then(num => {
+            setValue(num);
+        });
+    )");
+
+  engine->messageQueue()->shutdown(true);
+  engine->messageQueue()->loopQueue(utils::MessageQueue::LoopType::kLoopAndWait);
+  EXPECT_EQ(value, 1);
+}
+#endif
+
 }  // namespace script::test
